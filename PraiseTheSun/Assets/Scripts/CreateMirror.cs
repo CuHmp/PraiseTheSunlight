@@ -16,7 +16,7 @@ public class CreateMirror : MonoBehaviour {
         mouse_position = GameObject.FindGameObjectWithTag("mouse");
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        mouse_position.transform.position = new Vector3(0, 0, 0);
+        mouse_position.transform.position = new Vector3(0, sun_position.y + 2, 0);
     }
 
     // Update is called once per frame
@@ -46,6 +46,7 @@ public class CreateMirror : MonoBehaviour {
             mirror_transform.Add(endPoint.transform);
 
             createLineRenderer(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
+            createCollider(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
         }
     }
 
@@ -55,5 +56,21 @@ public class CreateMirror : MonoBehaviour {
         lineRenderer.SetPosition(0, endPos.position);
         lineRenderer.SetPosition(1, startPos.position);
         lineRenderer.widthCurve = AnimationCurve.Linear(0, 0.1f, 1, 0.1f);
+    }
+
+    void createCollider(Transform startPos, Transform endPos) {
+        CapsuleCollider collider = endPos.gameObject.AddComponent<CapsuleCollider>();
+        collider.direction = 2; // sets it to point in the Z direction
+        collider.radius = 0.1f;
+        endPos.localEulerAngles = new Vector3(0, calculateAngle(endPos.position, startPos.position) + 180, 0);
+        collider.height = Mathf.Sqrt(Mathf.Pow(endPos.position.x - startPos.position.x,2) + Mathf.Pow(endPos.position.z - startPos.position.z, 2));
+        collider.center = new Vector3(0,0,-collider.height / 2);
+
+    }
+
+    static public float calculateAngle(Vector3 pos1, Vector3 pos2) {
+        float xDiff = pos2.x - pos1.x;
+        float zDiff = pos2.z - pos1.z;
+        return Mathf.Atan2(xDiff, zDiff) * 180.0f / Mathf.PI;
     }
 }

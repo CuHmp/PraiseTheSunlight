@@ -10,6 +10,8 @@ public class CreateMirror : MonoBehaviour {
 
     public List<Transform> mirror_transform;
 
+    public static bool hasCreatedMirror = false;
+
     // Start is called before the first frame update
     void Start() {
         sun_position = GameObject.FindGameObjectWithTag("Sun").transform.position;
@@ -44,7 +46,13 @@ public class CreateMirror : MonoBehaviour {
             endPoint.transform.position = newPos;
 
             mirror_transform.Add(endPoint.transform);
+            endPoint.AddComponent<MirrorCollision>();
 
+            Rigidbody rb = endPoint.AddComponent<Rigidbody>();
+            rb.useGravity = false;
+
+
+            hasCreatedMirror = true;
             createLineRenderer(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
             createCollider(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
         }
@@ -59,7 +67,10 @@ public class CreateMirror : MonoBehaviour {
     }
 
     void createCollider(Transform startPos, Transform endPos) {
+        
+
         CapsuleCollider collider = endPos.gameObject.AddComponent<CapsuleCollider>();
+        collider.isTrigger = true;
         collider.direction = 2; // sets it to point in the Z direction
         collider.radius = 0.1f;
         endPos.localEulerAngles = new Vector3(0, calculateAngle(endPos.position, startPos.position) + 180, 0);

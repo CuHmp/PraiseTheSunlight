@@ -23,8 +23,8 @@ public class CreateMirror : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        float x = Input.GetAxis("Mouse X") * speed * Time.deltaTime;
-        float y = Input.GetAxis("Mouse Y") * speed * Time.deltaTime;
+        float y = Input.GetAxis("Mouse X") * speed * Time.deltaTime * -1;
+        float x = Input.GetAxis("Mouse Y") * speed * Time.deltaTime;
         mouse_position.transform.Translate(x, y, 0);
         if (Input.GetMouseButtonDown(0)) {
             Vector3 newPos = mouse_position.transform.position;

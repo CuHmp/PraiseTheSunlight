@@ -5,7 +5,7 @@ using UnityEngine;
 public class MirrorCollision : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collision) {
-        if(collision.gameObject.tag == "planet") {
+        if(collision.gameObject.tag == "planet" || collision.gameObject.tag == "target_planet") {
             CreateMirror.hasCreatedMirror = true;
             Destroy(gameObject);
         }

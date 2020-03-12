@@ -52,9 +52,10 @@ public class CreateMirror : MonoBehaviour {
             rb.useGravity = false;
 
 
-            hasCreatedMirror = true;
+
             createLineRenderer(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
             createCollider(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
+            CreateMirror.hasCreatedMirror = true;
         }
     }
 

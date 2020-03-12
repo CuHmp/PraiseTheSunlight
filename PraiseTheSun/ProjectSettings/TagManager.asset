@@ -7,6 +7,8 @@ TagManager:
   - Sun
   - mouse
   - mirror
+  - planet
+  - target_planet
   layers:
   - Default
   - TransparentFX

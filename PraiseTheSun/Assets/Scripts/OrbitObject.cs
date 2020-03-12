@@ -6,6 +6,7 @@ public class OrbitObject : MonoBehaviour {
 
     public float OrbitDegrees;
     public GameObject orbit_object;
+    public Vector3 rotationAxis;
 
     private Vector3 orbitPosition;
 
@@ -17,6 +18,7 @@ public class OrbitObject : MonoBehaviour {
 
     void Update() {
         transform.position = RotatePointAroundPivot(transform.position, orbitPosition, Quaternion.Euler(0, OrbitDegrees * Time.deltaTime, 0));
+        transform.Rotate(rotationAxis);
     }
 
     public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion angle) {

@@ -18,7 +18,7 @@ public class CreateMirror : MonoBehaviour {
         mouse_position = GameObject.FindGameObjectWithTag("mouse");
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        mouse_position.transform.position = new Vector3(0, sun_position.y + 2, 0);
+        mouse_position.transform.position = new Vector3(0, sun_position.y + 0.5f, 0);
     }
 
     // Update is called once per frame
@@ -26,6 +26,11 @@ public class CreateMirror : MonoBehaviour {
         float y = Input.GetAxis("Mouse X") * speed * Time.deltaTime * -1;
         float x = Input.GetAxis("Mouse Y") * speed * Time.deltaTime;
         mouse_position.transform.Translate(x, y, 0);
+
+        if (Input.GetMouseButtonDown(2)) {
+            mouse_position.transform.position = new Vector3(0, sun_position.y + 0.5f, 0);
+        }
+
         if (Input.GetMouseButtonDown(0)) {
             Vector3 newPos = mouse_position.transform.position;
             newPos.y = sun_position.y;
@@ -55,7 +60,7 @@ public class CreateMirror : MonoBehaviour {
 
             createLineRenderer(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
             createCollider(mirror_transform[mirror_transform.Count - 2].transform, endPoint.transform);
-            CreateMirror.hasCreatedMirror = true;
+            hasCreatedMirror = true;
         }
     }
 

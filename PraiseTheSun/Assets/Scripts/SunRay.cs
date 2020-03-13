@@ -14,31 +14,41 @@ class sun_ray {
 
 public class SunRay : MonoBehaviour {
 
+    private List<sun_ray> sun_rays;
+    private Ray startLight;
+    private LineRenderer line_renderer;
+    private Vector3 sun_pos;
+    private Vector3 bouncyRayDir;
+    private bool hasCollidedWithPlanet = false;
 
-    LineRenderer line_renderer;
-    Vector3 sun_pos;
-    public Vector3 endPos;
-    public Vector3 bouncyRayDir;
 
     public int rayLength = 40;
 
-    private Ray startLight;
-    private List<sun_ray> sun_rays;
+    public float ice_melting = 0;
+
+    Renderer renderer;
 
     // Start is called before the first frame update
     void Start() {
         sun_rays = new List<sun_ray>();
         line_renderer = GetComponent<LineRenderer>();
         sun_pos = GameObject.FindGameObjectWithTag("Sun").transform.position;
-        //endPos = transform.position * 30;
+
+
         startLight = new Ray();
         startLight.origin = transform.position;
         startLight.direction = new Vector3(-1, sun_pos.y / rayLength, 0);
         sun_rays.Add(new sun_ray(startLight));
+
+        StartCoroutine("SunrayBouncer");
     }
 
     // Update is called once per frame
     void Update() {
+        if (Input.GetMouseButtonDown(1)) {
+            CreateMirror.hasCreatedMirror = true;
+        }
+
         if (CreateMirror.hasCreatedMirror) {
             sun_rays.Clear();
             sun_rays.Add(new sun_ray(startLight));
@@ -48,27 +58,50 @@ public class SunRay : MonoBehaviour {
         }
     }
 
-    private void FixedUpdate() {
+    IEnumerator SunrayBouncer() {
+        while (true) {
+            RaycastHit hit;
+            for (int i = 0; i < sun_rays.Count; i++) {
+                if (Physics.Linecast(sun_rays[i].ray.origin, sun_rays[i].ray.direction * rayLength, out hit)) {
+                    string tag = hit.collider.gameObject.tag;
+                    if (tag == "mirror" && !sun_rays[i].hasBounced) {
+                        line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
+                        line_renderer.positionCount++;
 
-        RaycastHit hit;
-        for (int i = 0; i < sun_rays.Count; i++) {
-            if (Physics.Linecast(sun_rays[i].ray.origin, sun_rays[i].ray.direction * rayLength, out hit)) {
-                if (hit.collider.gameObject.tag == "mirror" && !sun_rays[i].hasBounced) {
-                    line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
-                    line_renderer.positionCount++;
+                        sun_rays[i].hasBounced = true;
 
-                    sun_rays[i].hasBounced = true;
+                        sun_rays.Add(new sun_ray(createNewRay(ref hit)));
+                    }
+                    else if (tag == "planet") {
+                        line_renderer.positionCount = i + 2;
+                        line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
+                        hasCollidedWithPlanet = true;
+                    }
+                    else if(tag == "target_planet") {
+                        line_renderer.positionCount = i + 2;
+                        line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
+                        hasCollidedWithPlanet = true;
+                        if (renderer == null) {
+                            renderer = hit.collider.gameObject.GetComponent<Renderer>();
+                        }
+                        else {
+                            if (ice_melting <= 1) {
+                                ice_melting += 0.01f;
+                                renderer.material.SetFloat("Ice_Melt", ice_melting);
+                            }
+                        }
+                    }
 
-                    sun_rays.Add(new sun_ray(createNewRay(ref hit)));
                 }
-                if (hit.collider.gameObject.tag == "planet") {
-                    line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
-                    line_renderer.positionCount = i;
+                else {
+                    line_renderer.SetPosition(line_renderer.positionCount - 1, sun_rays[sun_rays.Count - 1].ray.direction * rayLength);
+                    if (hasCollidedWithPlanet) {
+                        CreateMirror.hasCreatedMirror = true;
+                        hasCollidedWithPlanet = false;
+                    }
                 }
             }
-            else {
-                line_renderer.SetPosition(line_renderer.positionCount - 1, sun_rays[sun_rays.Count - 1].ray.direction * rayLength);
-            }
+            yield return new WaitForSeconds(0.05f);
         }
     }
     

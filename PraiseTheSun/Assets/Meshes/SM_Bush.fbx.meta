@@ -3,7 +3,22 @@ guid: a674a45c8ece1aa4cb9d99f68cdb8131
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_TreeTop
+    second: {fileID: 2100000, guid: 9b56a3c4092aa99409e94d2cf28b49b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_TreeTop.001
+    second: {fileID: 2100000, guid: 9b56a3c4092aa99409e94d2cf28b49b6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: M_TreeTop.002
+    second: {fileID: 2100000, guid: 9b56a3c4092aa99409e94d2cf28b49b6, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -44,7 +59,7 @@ ModelImporter:
     importCameras: 1
     importLights: 1
     swapUVChannels: 0
-    generateSecondaryUV: 1
+    generateSecondaryUV: 0
     useFileUnits: 1
     keepQuads: 0
     weldVertices: 1

@@ -50,11 +50,13 @@ public class SunRay : MonoBehaviour {
         }
 
         if (CreateMirror.hasCreatedMirror) {
+            StopAllCoroutines();
             sun_rays.Clear();
             sun_rays.Add(new sun_ray(startLight));
             line_renderer.positionCount = 2;
             line_renderer.SetPosition(line_renderer.positionCount - 1, startLight.direction * rayLength);
             CreateMirror.hasCreatedMirror = false;
+            StartCoroutine("SunrayBouncer");
         }
     }
 
@@ -75,12 +77,14 @@ public class SunRay : MonoBehaviour {
                     else if (tag == "planet") {
                         line_renderer.positionCount = i + 2;
                         line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
-                        hasCollidedWithPlanet = true;
+                        removeAllElementsBehind(ref sun_rays, i);
+                        sun_rays[i].hasBounced = false;
                     }
                     else if(tag == "target_planet") {
                         line_renderer.positionCount = i + 2;
                         line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
-                        hasCollidedWithPlanet = true;
+                        removeAllElementsBehind(ref sun_rays, i);
+                        sun_rays[i].hasBounced = false;
                         if (renderer == null) {
                             renderer = hit.collider.gameObject.GetComponent<Renderer>();
                         }
@@ -95,13 +99,15 @@ public class SunRay : MonoBehaviour {
                 }
                 else {
                     line_renderer.SetPosition(line_renderer.positionCount - 1, sun_rays[sun_rays.Count - 1].ray.direction * rayLength);
-                    if (hasCollidedWithPlanet) {
-                        CreateMirror.hasCreatedMirror = true;
-                        hasCollidedWithPlanet = false;
-                    }
                 }
             }
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    void removeAllElementsBehind(ref List<sun_ray> list, int index) {
+        for(int i = index + 1; i < list.Count; i++) {
+            list.RemoveAt(i);
         }
     }
     

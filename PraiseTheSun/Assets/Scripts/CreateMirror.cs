@@ -73,14 +73,12 @@ public class CreateMirror : MonoBehaviour {
     }
 
     void createCollider(Transform startPos, Transform endPos) {
-        
-
         CapsuleCollider collider = endPos.gameObject.AddComponent<CapsuleCollider>();
         collider.isTrigger = true;
         collider.direction = 2; // sets it to point in the Z direction
         collider.radius = 0.1f;
         endPos.localEulerAngles = new Vector3(0, calculateAngle(endPos.position, startPos.position) + 180, 0);
-        collider.height = Mathf.Sqrt(Mathf.Pow(endPos.position.x - startPos.position.x,2) + Mathf.Pow(endPos.position.z - startPos.position.z, 2));
+        collider.height = Mathf.Sqrt(Mathf.Pow(endPos.position.x - startPos.position.x, 2) + Mathf.Pow(endPos.position.z - startPos.position.z, 2));
         collider.center = new Vector3(0,0,-collider.height / 2);
 
     }

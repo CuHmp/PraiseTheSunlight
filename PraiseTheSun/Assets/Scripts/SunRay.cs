@@ -105,7 +105,7 @@ public class SunRay : MonoBehaviour {
 
                         sun_rays.Add(new sun_ray(createNewRay(ref hit)));
                     }
-                    else if (tag == "planet") {
+                    else if (tag == "planet" || tag == "Sun") {
                         line_renderer.positionCount = i + 2;
                         line_renderer.SetPosition(line_renderer.positionCount - 1, hit.point);
                         removeAllElementsBehind(ref sun_rays, i);

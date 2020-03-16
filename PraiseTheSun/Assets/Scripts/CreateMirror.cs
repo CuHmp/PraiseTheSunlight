@@ -7,6 +7,8 @@ public class CreateMirror : MonoBehaviour {
     private GameObject mouse_position;
     public float speed = 20.0f;
 
+    public Material mirror_material;
+
     public List<Transform> mirror_transform;
 
     public static bool hasCreatedMirror = false;
@@ -69,6 +71,8 @@ public class CreateMirror : MonoBehaviour {
         lineRenderer.SetPosition(0, endPos.position);
         lineRenderer.SetPosition(1, startPos.position);
         lineRenderer.widthCurve = AnimationCurve.Linear(0, 0.1f, 1, 0.1f);
+        lineRenderer.material = mirror_material;
+        lineRenderer.textureMode = LineTextureMode.RepeatPerSegment;
     }
 
     void createCollider(Transform startPos, Transform endPos) {

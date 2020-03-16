@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class OrbitObject : MonoBehaviour {
 
@@ -17,8 +15,8 @@ public class OrbitObject : MonoBehaviour {
 
 
     void Update() {
-        transform.position = RotatePointAroundPivot(transform.position, orbitPosition, Quaternion.Euler(0, OrbitDegrees * Time.deltaTime, 0));
         transform.Rotate(rotationAxis);
+        transform.parent.transform.position = RotatePointAroundPivot(transform.position, orbitPosition, Quaternion.Euler(0, OrbitDegrees * Time.deltaTime, 0));
     }
 
     public static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Quaternion angle) {

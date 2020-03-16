@@ -25,6 +25,7 @@ public class SunRay : MonoBehaviour {
     public int rayLength = 40;
 
     public float ice_melting = 0;
+    public float grass_growing = 0;
 
     Renderer renderer;
 
@@ -92,6 +93,10 @@ public class SunRay : MonoBehaviour {
                             if (ice_melting <= 1) {
                                 ice_melting += 0.01f;
                                 renderer.material.SetFloat("Ice_Melt", ice_melting);
+                            }
+                            else if (grass_growing <= 1 && ice_melting >= 1) {
+                                grass_growing += 0.01f;
+                                renderer.material.SetFloat("Grass_Grow", grass_growing);
                             }
                         }
                     }

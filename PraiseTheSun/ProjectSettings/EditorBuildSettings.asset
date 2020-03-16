@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Adams_DeathStar.unity
+    guid: 5b30aa220bff60f4e8de9db910d5204d
   m_configObjects: {}

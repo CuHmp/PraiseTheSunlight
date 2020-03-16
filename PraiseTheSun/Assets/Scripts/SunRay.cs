@@ -14,24 +14,45 @@ class sun_ray {
 
 public class SunRay : MonoBehaviour {
 
+
     private List<sun_ray> sun_rays;
     private Ray startLight;
     private LineRenderer line_renderer;
+
+    private List<Transform> tree_scale;
+
     private Vector3 sun_pos;
     private Vector3 bouncyRayDir;
-    private bool hasCollidedWithPlanet = false;
+    private List<Vector3> goal_tree_scale;
+
+    private float ice_melting = 0;
+    private float grass_growing = 0;
+    private float goal_timer = 3.0f;
 
 
     public int rayLength = 40;
+    public float grow_value = 0.01f;
+    public bool tree_done_growing;
 
-    public float ice_melting = 0;
-    public float grass_growing = 0;
+    public GameObject WinText;
 
     Renderer renderer;
 
     // Start is called before the first frame update
     void Start() {
+        WinText.SetActive(false);
         sun_rays = new List<sun_ray>();
+
+        tree_scale = new List<Transform>();
+        goal_tree_scale = new List<Vector3>();
+        for (int i = 0; i < GameObject.FindGameObjectsWithTag("Tree").Length; i++) {
+            tree_scale.Add(GameObject.FindGameObjectsWithTag("Tree")[i].transform);
+        }
+        foreach (Transform t in tree_scale) {
+            goal_tree_scale.Add(new Vector3(t.localScale.x, t.localScale.y, t.localScale.z));
+            t.localScale = new Vector3(0, 0, 0);
+        }
+
         line_renderer = GetComponent<LineRenderer>();
         sun_pos = GameObject.FindGameObjectWithTag("Sun").transform.position;
 
@@ -50,14 +71,23 @@ public class SunRay : MonoBehaviour {
             CreateMirror.hasCreatedMirror = true;
         }
 
+        if (tree_done_growing) {
+            goal_timer -= Time.deltaTime;
+        }
+        else {
+            goal_timer = 3.0f;
+        }
+        if(goal_timer <= 0) {
+            WinText.SetActive(true);
+        }
+
+
         if (CreateMirror.hasCreatedMirror) {
-            StopAllCoroutines();
             sun_rays.Clear();
             sun_rays.Add(new sun_ray(startLight));
             line_renderer.positionCount = 2;
             line_renderer.SetPosition(line_renderer.positionCount - 1, startLight.direction * rayLength);
             CreateMirror.hasCreatedMirror = false;
-            StartCoroutine("SunrayBouncer");
         }
     }
 
@@ -91,12 +121,24 @@ public class SunRay : MonoBehaviour {
                         }
                         else {
                             if (ice_melting <= 1) {
-                                ice_melting += 0.01f;
+                                ice_melting += grow_value;
                                 renderer.material.SetFloat("Ice_Melt", ice_melting);
                             }
                             else if (grass_growing <= 1 && ice_melting >= 1) {
-                                grass_growing += 0.01f;
+                                grass_growing += grow_value;
                                 renderer.material.SetFloat("Grass_Grow", grass_growing);
+                            }
+                            else if(grass_growing >= 1) {
+                                for (int j = 0; j < goal_tree_scale.Count; j++) {
+                                    if(tree_scale[j].localScale.x < goal_tree_scale[j].x) {
+                                        float value = tree_scale[j].localScale.x + grow_value * 4;
+                                        tree_scale[j].localScale = new Vector3(value, value, value);
+                                        tree_done_growing = false;
+                                    }
+                                    else {
+                                        tree_done_growing = true;
+                                    }
+                                }
                             }
                         }
                     }
